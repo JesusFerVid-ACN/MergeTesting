@@ -23,6 +23,51 @@ El historial ahora está así:
 
 Ahora `main` y el puntero `HEAD` apuntan al último commit de `develop`.
 
+### Conflictos
+Simulemos una situación de conflicto. De la rama `develop`, vamos a sacar dos ramas:
+
+- `feature/welcome`: En esta rama, se añade un mensaje de bienvenida a la página principal.
+- `feature/styles`: En esta, se cambia el color del título.
+
+Supongamos que en cada rama está trabajando un usuario. En un momento dado, el usuario de `feature/welcome` se sale de su jurisdicción y decide que no le gusta el color del título, y pone uno de su preferencia. Esto tendrá consecuencias.
+
+Ambos hacen commit de sus cambios, y el historial se ve así:
+
+![Commits in different branches](img/readme/tree3.png)
+
+Vamos a fusionar los cambios de estilos a `develop`:
+
+![Merge ok](img/readme/mergeok.png)
+
+No hay problema. Los cambios se aplican en la rama destino. Ahora incluyamos los cambios de la otra rama:
+
+![Merge conflict](img/readme/mergeconflict.png)
+
+Tenemos un ***conflicto***. Además, git nos chiva que es el el fichero `css/styles.css`, vamos a ver lo que pasa en VS Code en ese fichero:
+
+![VS Code conflict](img/readme/vscodeconflict.png)
+
+Nos dice que en esa línea, vienen cambios diferentes en ambos lados. Ahora mismo, tiene el valor superior, en verde, pero en la rama entrante, se ha modificado la misma línea con un valor distinto. Debemos elegir si aceptamos el actual, el entrante, ambos o algo diferente.
+
+En nuestro caso, nos quedamos con el cambio que ya tenemos, ya que es el que corresponde a la rama donde estábamos editando los estilos. El usuario trabajando en `feature/welcome` se ha excedido de sus límites y ha modificado un fragmento de código que no le correspondía.
+
+Tras aceptar el cambio correcto, vamos a hacer un `git status`:
+
+![Git status on conflict](img/readme/gitstatusconflict.png)
+
+Nos dice que tenemos *unmerged paths*, es decir, que estamos en medio de un *merge* no finalizado. Nos da varias opciones, o bien abortar la fusión con `git merge --abort` o bien resolver los conflictos haciendo un commit. 
+
+Si miramos más abajo, vemos que en index.html no hay conflictos, está marcado como listo para añadirse al commit, pues las modificaciones en ese archivo no sobreescriben nada en esta rama. Pero css/styles.css sigue marcado como modificado en ambos lados. Como ya lo tenemos resuelto, lo añadimos al stage para marcarlo como tal. De modo que lo que falta por hacer para resolver es:
+
+```bash
+git add css/styles.css
+git commit -m "Merged branches"
+```
+
+Y el historial muestra las ramas correctamente fusionadas:
+
+![Conflict solved](img/readme/conflictsolved.png)
+
 ## Stash
 Para explicar lo que es el stash, maginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluídos en una release, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
 
