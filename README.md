@@ -1,6 +1,7 @@
 # Pruebas de merge
 En este reposiorio, simulamos la creación de un sitio web entre dos usuarios, los cuales no están muy sincronizados a la hora de trabajar y puede que haya *conflictos* a la hora de combinar (*merge*) los cambios de cada uno de ellos. 
 
+
 ## Merge
 Vamos a empezar por lo más básico. Tenemos un repositorio con dos ramas. Tenemos el commit inicial en la rama `main`, y cambiamos a `develop` para seguir desarrollando.
 
@@ -67,6 +68,32 @@ git commit -m "Merged branches"
 Y el historial muestra las ramas correctamente fusionadas:
 
 ![Conflict solved](img/readme/conflictsolved.png)
+
+## Rebase
+El cambio de base o *rebase* es otra técnica de incorporación de cambios entre ramas, además del merge.
+
+> **Warning**
+> El rebase altera el historial, es decir, elimina commits y genera otros nuevos, con distinto código hash. Este tipo de técnicas no se recomienda en commits subidos a un repositorio a los cuales más personas tienen acceso. 
+
+Rebase hace algo opuesto a merge, pero que acaba obteniendo el mismo resultado. En lugar de traer todos los commits de una rama para sí misma, lo que hace es que posiciona todos los commits de la rama actual al final de la rama especificada. 
+
+Desde fuera, parece que no ha ocurrido nada con los commits existentes, sin embargo, los commits no pueden "moverse", de modo que internamente, lo que se ha hecho es eliminar todos esos commits y crear otros idénticos desde el final de la rama destino. Hay que llevar cuidado con eso, ya que podría romper el historial para otros usuarios con acceso a esos commits.
+
+### Como aplicar un rebase
+
+
+### Merge después de rebase
+Analicemos este caso:
+```bash
+git switch feature/styles
+git rebase develop
+git switch develop
+git merge feature/styles
+```
+
+Hemos incorporado los cambios de la rama secundaria en la principal con `git rebase`. A continuación, hemos vuelto a la principal para traernos los cambios de la secundaria con `git merge`. 
+
+Si hacemos un `git branch`, veremos que tenemos dos ramas. Sin embargo, si observamos el grafo, vemos algo curioso. El historial es lineal. No hay ramificaciones. Ese es uno de los motivos por los que algunos usuarios utilizan rebase. Consideran que un historial lineal es más sencillo de entender y gestionar.
 
 ## Stash
 Para explicar lo que es el stash, maginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluídos en una release, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
