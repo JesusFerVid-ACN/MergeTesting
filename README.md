@@ -119,59 +119,96 @@ Creamos dos ramas: `feature/add-text` y `feature/font-changes `. Añadimos unos 
 
 Cambiamos a la segunda, donde queremos incorporar los cambios de la primera, para ir sincronizados:
 
-![Alt text](img/readme/rebaseconflict2.png)
+![Rebase conflict](img/readme/rebaseconflict2.png)
 
 Hacemos los cambios necesarios y creamos un commit:
 
-![Alt text](img/readme/rebaseconflict3.png)
+![Rebase conflict](img/readme/rebaseconflict3.png)
 
 Se ve genial, todo lineal. Ahora, de vuelta en `feature/add-text`, vemos que alguien se ha vuelto a salir de su campo de acción y ha cambiado la fuente:
 
-![Alt text](img/readme/rebaseconflict4.png)
+![Rebase conflict](img/readme/rebaseconflict4.png)
 
 En `feature/font-changes`, el usuario quiere volver a incorporar los cambios de `feature/add-text`. Empieza el show:
 
-![Alt text](img/readme/rebaseconflict5.png)
+![Rebase conflict](img/readme/rebaseconflict5.png)
 
 Esto es lo que obtenemos al tratar de hacer rebase. No es muy explicativo. Veamos qué muestra `git status`:
 
-![Alt text](img/readme/rebaseconflict6.png)
+![Rebase conflict](img/readme/rebaseconflict6.png)
 
 Esto ya nos aclara un poco, nos da varias opciones. Vamos a optar por continuar el rebase con `git rebase --continue`.
 
-![Alt text](img/readme/rebaseconflict7.png)
+![Rebase conflict](img/readme/rebaseconflict7.png)
 
 De nuevo más información, y ya empieza a parecerse al proceso de resolución de conflictos del merge. Tenemos que resolver manualmente, marcarlos como resueltos añadiendo al stage y haciendo commit.
 
 También podemos saltarnos ese commit o cancelar todo el rebase. Continuemos. En VS Code, tenemos ya esta vista ya familiar:
 
-![Alt text](img/readme/rebaseconflict8.png)
+![Rebase conflict](img/readme/rebaseconflict8.png)
 
 Aquí hay algo interesante. Recordemos que estamos en `feature/font-changes`, queriendo incorporar `feature/add-text`. ¿Y tenemos los cambios hechos en el commit de `feature/font-changes` como *Incoming*? En realidad tiene sentido, recordemos que `rebase` lo que hace es posicionar **nuestra** rama al final de otra. De modo que aceptamos en este caso los cambios entrantes.
 
 Añadimos el cambio al stage y hacemos commit:
 
-![Alt text](img/readme/rebaseconflict9.png)
+![Rebase conflict](img/readme/rebaseconflict9.png)
 
 Por último, tal y como se nos dijo, ejecutamos `git rebase --continue`:
 
-![Alt text](img/readme/rebaseconflict10.png)
+![Rebase conflict](img/readme/rebaseconflict10.png)
 
 Por fin tenemos el conflicto resuelto. El árbol queda así:
 
-![Alt text](img/readme/rebaseconflict11.png)
+![Rebase conflict](img/readme/rebaseconflict11.png)
 
 > **Note**  
 > Vemos que `rebase` genera árboles más limpios, pero tratar con los conflictos es mucho más difícil que con `merge`. Y no olvidemos el problema de la eliminación de commits. Nunca se avisa demasiadas veces.
 
-### Peligro
-Siguiendo con las mismas ramas, esta vez vamos a provocar algo bastante peor que un conflicto. Resumiendo el proceso anterior, se crearon dos ramas, y una de ellas (`feature/font-changes`) hizo `rebase` de la otra (`feature/add-text`), en dos ocasiones, la segunda con conflictos, pero finalmente resueltos.
+### Rebase y push
+Rebase altera el historial, con lo cual no es muy amigo de push. Vamos a ver un ejemplo:
 
-De ahí deducimos que ahora mismo el origen de `feature/font-changes` está en algún punto de `feature/add-text`. Vamos a ver cuanto puede el `rebase` complicarnos la vida si no sabemos lo que hacemos.
+Hemos creado una nueva rama, `feature/useful`, que contiene funcionalidades útiles para más de un usuario. 
 
-Siguiendo nuestro proceso de desarrollo, la rama `develop` sigue su avance, incluyendo más commits:
+![Rebase and Push](img/readme/strange1.png)
 
+A los colaboradores les vendría bien usar sus funcionalidades, de modo que, aunque no sea una rama principal, decidimos subirla al remoto.
 
+![Rebase and Push](img/readme/strange2.png)
+
+Mientras tanto, la rama `develop` sigue incluyendo commits.
+
+![Rebase and Push](img/readme/strange3.png)
+
+De hecho, a `feature/useful` le vendría bien incluir dichas funcionalidades. Así que se hace un rebase.
+
+![Rebase and Push](img/readme/strange4.png)
+
+Veamos el árbol:
+
+![Rebase and Push](img/readme/strange5.png)
+
+Ahora `feature/useful` está a continuación de `develop` y... ¿existe el mismo commit dos veces? ¿Qué ocurre aquí?
+
+Pues que el commit que vemos abajo es el que está en la rama remota, que no se ha borrado.
+
+En fin, vamos a hacer push de la rama, que tenemos nuevos cambios.
+
+![Rebase and Push](img/readme/strange6.png)
+
+El push ha sido rechazado... porque mi rama está ¿detrás? de su contraparte remota. Recordemos que antes hicimos rebase de esta rama con `develop`. Hemos cambiado el historial, y eliminado commits... de una rama que estaba **online**. Por eso git está tan confundido.
+
+Nos pide algo inpensable: que hagamos `pull` de los cambios sin incorporar, ya que estamos "detrás". Por extraño que parezca, lo hacemos, antes de subir nuestros cambios. Es decir:
+
+```bash
+git pull
+git push
+```
+
+Después de eso, este es el árbol:
+
+![Rebase and Push](img/readme/strange7.png)
+
+Esto es un ejemplo de un **mal** uso de `rebase`. Queríamos un historial claro, limpio y sin ramificaciones. Hemos terminado con un historial ramificado, poco entendible, con un commit duplicado, y habiendo tenido que hacer un `pull` (lo cual incluye un `merge`) que no aporta nada, para luego por fin poder hacer un `push`, que era lo único que queríamos, subir nuestros cambios.
 
 ### Merge después de rebase
 Analicemos este caso:
