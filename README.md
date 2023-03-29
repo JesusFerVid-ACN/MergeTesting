@@ -1,4 +1,4 @@
-# Pruebas de merge
+# Pruebas de fusión entre ramas
 En este reposiorio, simulamos la creación de un sitio web entre dos usuarios, los cuales no están muy sincronizados a la hora de trabajar y puede que haya *conflictos* a la hora de combinar (*merge*) los cambios de cada uno de ellos. 
 
 
@@ -9,20 +9,21 @@ Creamos unos cuantos commits en la rama de desarrollo y por fin terminamos nuest
 
 ![Commits 1](img/readme/tree1.png)
 
-Sin complicarnos, hacemos un *merge* normal y corriente. Todos los cambios de `develop` ahora están en `main`.
+Sin complicarnos, hacemos un *merge* normal y corriente. Nos vamos a la rama destino y fusionamos los cambios de la rama origen.
 
 ```bash
 git switch main
 git merge develop
 ```
 
+> **Note**
 > `git switch` es un comando añadido en las últimas versiones de git. Si no tenemos git suficientemente actualizado, usaremos el clásico `git checkout`.
 
 El historial ahora está así:
 
 ![Commits 2](img/readme/tree2.png)
 
-Ahora `main` y el puntero `HEAD` apuntan al último commit de `develop`.
+Todos los cambios de `develop` ahora están en `main`. 
 
 ### Conflictos
 Simulemos una situación de conflicto. De la rama `develop`, vamos a sacar dos ramas:
@@ -72,14 +73,46 @@ Y el historial muestra las ramas correctamente fusionadas:
 ## Rebase
 El cambio de base o *rebase* es otra técnica de incorporación de cambios entre ramas, además del merge.
 
-> **Warning**
-> El rebase altera el historial, es decir, elimina commits y genera otros nuevos, con distinto código hash. Este tipo de técnicas no se recomienda en commits subidos a un repositorio a los cuales más personas tienen acceso. 
-
 Rebase hace algo opuesto a merge, pero que acaba obteniendo el mismo resultado. En lugar de traer todos los commits de una rama para sí misma, lo que hace es que posiciona todos los commits de la rama actual al final de la rama especificada. 
 
-Desde fuera, parece que no ha ocurrido nada con los commits existentes, sin embargo, los commits no pueden "moverse", de modo que internamente, lo que se ha hecho es eliminar todos esos commits y crear otros idénticos desde el final de la rama destino. Hay que llevar cuidado con eso, ya que podría romper el historial para otros usuarios con acceso a esos commits.
+### Cuando aplicar un rebase
+Hemos creado la rama `feature/awesome-things`  a partir de la rama `develop`, en la cual vamos a trabajar, incorporando una serie de características increíbles. Aquí podemos verlas:
+
+![Rebase 1](img/readme/rebase1.png)
+
+En `feature/awesome-things`, hemos aumentado el tamaño del título, y en `develop`, hemos cambiado el texto del título. No hay indicios de conflicto a la vista, pero podemos apreciar que el cambio en `develop` se hizo posteriormente a haber creado la rama secundaria, con lo cual dicho cambio no está incorporado en `feature/awesome-things`.
+
+En este caso, nuestra rama sólo está perdiendo los cambios de un solo commit en `develop`. Sin embargo, si estamos mucho tiempo desarrollando en una rama, en un repositorio en el que colaboran muchos usuarios, es altamente probable que estemos perdiendo muchos cambios, lo cual aumenta la probabilidad de conflictos de fusión, y errores al ejecutar, si algún módulo ha tenido cambios drásticos en su interfaz y/o funcionamiento.
+
+**Conclusión**: se recomienda que nuestras ramas vayan actualizandose con su rama "padre" de vez en cuando. Ahí entra el rebase.
 
 ### Como aplicar un rebase
+El rebase se aplica exactamente igual que el merge. Debemos situarnos en la rama destino, es decir, en la que queremos incorporar los cambios. Después, hacemos el rebase, así:
+
+```bash
+git switch feature/awesome-things
+git rebase develop
+```
+
+![Rebase 2](img/readme/rebase2.png)
+
+Veamos como ha quedado ahora el historial:
+
+![Rebase 3](img/readme/rebase3.png)
+
+Vemos varias cosas. Lo primero, el historial ahora es lineal, no hay "ramificaciones". Y el commit con el cambio de tamaño está *después* que el de cambio de título.
+
+Desde fuera, parece como si todos los commits de `feature/awesome-things` se hubiesen movido para colocarse delante del úlimo commit de `develop`. Sin embargo, los commits no pueden "moverse", y una pista la tenemos en el hecho de que el commit `Bigger title` ahora tiene un identificador (un *hash*) distinto. Eso se debe a que **NO** es el mismo commit.
+
+Internamente, lo que se ha hecho es **eliminar** todos esos commits y crear otros con las mismas modificaciones, pero partiendo (poniendo su ***base***) desde el final de la rama que queríamos incorporar (la rama origen).
+
+> **Warning**
+> El rebase altera el historial, es decir, elimina commits y genera otros nuevos, con distinto código *hash*. Este tipo de técnicas no son recomendadas si hablamos de commits a los cuales otros usuarios tienen acceso.
+> Si un usuario quisiera acceder a uno de esos commits, o generase una rama partiendo de ellos, podría haber problemas si el rebase los elimina.
+
+### Conflictos 
+
+### Peligro
 
 
 ### Merge después de rebase
