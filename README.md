@@ -210,6 +210,9 @@ Después de eso, este es el árbol:
 
 Esto es un ejemplo de un **mal** uso de `rebase`. Queríamos un historial claro, limpio y sin ramificaciones. Hemos terminado con un historial ramificado, poco entendible, con un commit duplicado, y habiendo tenido que hacer un `pull` (lo cual incluye un `merge`) que no aporta nada, para luego por fin poder hacer un `push`, que era lo único que queríamos, subir nuestros cambios.
 
+> **Note**  
+> Hay que tener muy claro que sabemos lo que hacemos al usar herramientas tan poderosas como rebase. Si no lo tenemos claro, podemos conseguir todo lo contrario a lo que pretendemos.
+
 ### Merge después de rebase
 Analicemos este caso:
 ```bash
