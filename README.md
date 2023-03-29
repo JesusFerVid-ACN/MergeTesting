@@ -147,7 +147,7 @@ También podemos saltarnos ese commit o cancelar todo el rebase. Continuemos. En
 
 ![Alt text](img/readme/rebaseconflict8.png)
 
-Aquí hay algo interesante. Recordemos que estamos en `feature/font-changes`, queriendo incorporar `feature/add-text`. ¿Y tenemos los cambios hechos en el commit de f`eature/font-changes` como *Incoming*? En realidad tiene sentido, recordemos que rebase lo que hace es posicionar **nuestra** rama al final de otra. De modo que aceptamos en este caso los cambios entrantes.
+Aquí hay algo interesante. Recordemos que estamos en `feature/font-changes`, queriendo incorporar `feature/add-text`. ¿Y tenemos los cambios hechos en el commit de `feature/font-changes` como *Incoming*? En realidad tiene sentido, recordemos que `rebase` lo que hace es posicionar **nuestra** rama al final de otra. De modo que aceptamos en este caso los cambios entrantes.
 
 Añadimos el cambio al stage y hacemos commit:
 
@@ -162,10 +162,16 @@ Por fin tenemos el conflicto resuelto. El árbol queda así:
 ![Alt text](img/readme/rebaseconflict11.png)
 
 > **Note**  
-> Vemos que rebase genera árboles más limpios, pero tratar con los conflictos es mucho más difícil que con merge.
+> Vemos que `rebase` genera árboles más limpios, pero tratar con los conflictos es mucho más difícil que con `merge`. Y no olvidemos el problema de la eliminación de commits. Nunca se avisa demasiadas veces.
 
 ### Peligro
-Siguiendo con las mismas ramas, esta vez vamos a provocar algo bastante peor que un conflicto.
+Siguiendo con las mismas ramas, esta vez vamos a provocar algo bastante peor que un conflicto. Resumiendo el proceso anterior, se crearon dos ramas, y una de ellas (`feature/font-changes`) hizo `rebase` de la otra (`feature/add-text`), en dos ocasiones, la segunda con conflictos, pero finalmente resueltos.
+
+De ahí deducimos que ahora mismo el origen de `feature/font-changes` está en algún punto de `feature/add-text`. Vamos a ver cuanto puede el `rebase` complicarnos la vida si no sabemos lo que hacemos.
+
+Siguiendo nuestro proceso de desarrollo, la rama `develop` sigue su avance, incluyendo más commits:
+
+
 
 ### Merge después de rebase
 Analicemos este caso:
