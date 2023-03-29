@@ -214,17 +214,80 @@ Esto es un ejemplo de un **mal** uso de `rebase`. Queríamos un historial claro,
 > Hay que tener muy claro que sabemos lo que hacemos al usar herramientas tan poderosas como rebase. Si no lo tenemos claro, podemos conseguir todo lo contrario a lo que pretendemos.
 
 ### Merge después de rebase
-Analicemos este caso:
+Después de ver los problemas y peligros de `rebase`, veamos un caso de muy buen uso del mismo. Combinando adecuadamente con `merge`.
+
+Vamos a seguir con el fatídico ejemplo anterior, partiendo del commit en el que se solucionó todo. 
+
+En `feature/useful` hemos ajustado el color al que cambia el título al hacer click, a uno más... *celestial*. Mientras tanto, `develop` ha avanzado por su propio camino. Así estamos:
+
+![Rebase and merge](img/readme/rebasemerge1.png)
+
+Como buena práctica, queremos incorporar los cambios de `develop` en nuestra rama `feature/useful`. 
+
 ```bash
-git switch feature/styles
 git rebase develop
-git switch develop
-git merge feature/styles
 ```
 
-Hemos incorporado los cambios de la rama secundaria en la principal con `git rebase`. A continuación, hemos vuelto a la principal para traernos los cambios de la secundaria con `git merge`. 
+Ahora tenemos esto:
 
-Si hacemos un `git branch`, veremos que tenemos dos ramas. Sin embargo, si observamos el grafo, vemos algo curioso. El historial es lineal. No hay ramificaciones. Ese es uno de los motivos por los que algunos usuarios utilizan rebase. Consideran que un historial lineal es más sencillo de entender y gestionar.
+![Rebase and merge](img/readme/rebasemerge2.png)
+
+La rama `feature/useful` se ha colocado encima de `develop`, y el historial es lineal. 
+
+Tenemos los cambios de `develop` en `feature/useful`, pero queremos también incorporar los de `feature/useful` en `develop`, porque queremos lanzar una *developer preview*, por ejemplo.
+
+Ya vimos lo que ocurrió al optar por incorporar cambios con `rebase` en una rama online, así que ni nos lo planteamos. ¿Y qué tal con `merge`? Probemos:
+
+```bash
+git merge feature/useful
+```
+
+Atención a la salida:
+
+![Rebase and merge](img/readme/rebasemerge3.png)
+
+Ya hemos visto eso de `fast-forward` al principio, a hablar de `merge`, pero ¿qué significa? Pues significa que git no ha tenido que esforzarse mucho para resolver la fusión. La rama destino `develop` no ha tenido cambios y sólo tiene que incorporar los que le entran de `feature/useful`.
+
+Lo único necesario es *adelantar* (*fast-forward*) el puntero de `develop` para que apunte al mismo sitio que `feature/useful`.
+
+Veamos el árbol:
+
+![Rebase and merge](img/readme/rebasemerge4.png)
+
+Precioso. Los cambios han sido incorporados a `develop`. El historial de `develop` no ha tenido cambios extraños, y además todo es lineal.
+
+Esto ha sido posible porque gracias a un **buen** uso de `rebase`, las ramas han avanzado de manera sincronizada, sin llegar a diferir demasiado.
+
+### Subamoslo
+Ahora casi da miedo fastidiarla al hacer `push`, con tanto `rebase` y `merge` involucrado.
+
+Infundado. Para empezar, en `develop` no hay problema:
+
+```bash
+git push
+```
+
+Y los cambios se suben:
+
+![Push ok](img/readme/pushok1.png)
+
+Y ahora la rama `feature/useful`, que recordemos que también la queremos en el remoto.
+
+Con un `git push`, podemos entrar en el mismo terreno fangoso que hemos visto anteriormente, ya que esta rama ha hecho algún que otro `rebase`. Existe una forma de arreglar eso.
+
+Si pasamos `--force` a `git push`, estamos aplicando fuerza bruta y nuestros cambios sobreescribirán los que hay online, pudiendo destruir trabajo de otros colaboradores. Pero `--force-with-lease` no nos dejará seguir adelante si ese es el caso, pero tampoco abortará si detecta un historial extraño. Digamos que prepara a `push` para que entienda los cambios hechos por `rebase`.
+
+De modo que, situados en `feature/useful`, hacemos:
+
+```bash
+git push --force-with-lease
+```
+
+Y después de eso, este es el árbol:
+
+![Push ok](img/readme/pushok2.png)
+
+Las ramas han sido subidas, no hemos tenido quebraderos de cabeza, y el historial está limpio y claro.
 
 ## Stash
 Para explicar lo que es el stash, maginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluídos en una release, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
