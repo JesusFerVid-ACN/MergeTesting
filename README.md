@@ -16,7 +16,7 @@ git switch main
 git merge develop
 ```
 
-> **Note**
+> **Note**  
 > `git switch` es un comando añadido en las últimas versiones de git. Si no tenemos git suficientemente actualizado, usaremos el clásico `git checkout`.
 
 El historial ahora está así:
@@ -106,14 +106,66 @@ Desde fuera, parece como si todos los commits de `feature/awesome-things` se hub
 
 Internamente, lo que se ha hecho es **eliminar** todos esos commits y crear otros con las mismas modificaciones, pero partiendo (poniendo su ***base***) desde el final de la rama que queríamos incorporar (la rama origen).
 
-> **Warning**
+> **Warning**  
 > El rebase altera el historial, es decir, elimina commits y genera otros nuevos, con distinto código *hash*. Este tipo de técnicas no son recomendadas si hablamos de commits a los cuales otros usuarios tienen acceso.
 > Si un usuario quisiera acceder a uno de esos commits, o generase una rama partiendo de ellos, podría haber problemas si el rebase los elimina.
 
 ### Conflictos 
+Puesto que estamos igualmente integrando cambios de una rama en otra, puede haber conflictos en el proceso. Vamos a hacer algo así.
+
+Creamos dos ramas: `feature/add-text` y `feature/font-changes `. Añadimos unos cuantos commits en la primera:
+
+![Alt text](img/readme/rebaseconflict1.png)
+
+Cambiamos a la segunda, donde queremos incorporar los cambios de la primera, para ir sincronizados:
+
+![Alt text](img/readme/rebaseconflict2.png)
+
+Hacemos los cambios necesarios y creamos un commit:
+
+![Alt text](img/readme/rebaseconflict3.png)
+
+Se ve genial, todo lineal. Ahora, de vuelta en `feature/add-text`, vemos que alguien se ha vuelto a salir de su campo de acción y ha cambiado la fuente:
+
+![Alt text](img/readme/rebaseconflict4.png)
+
+En `feature/font-changes`, el usuario quiere volver a incorporar los cambios de `feature/add-text`. Empieza el show:
+
+![Alt text](img/readme/rebaseconflict5.png)
+
+Esto es lo que obtenemos al tratar de hacer rebase. No es muy explicativo. Veamos qué muestra `git status`:
+
+![Alt text](img/readme/rebaseconflict6.png)
+
+Esto ya nos aclara un poco, nos da varias opciones. Vamos a optar por continuar el rebase con `git rebase --continue`.
+
+![Alt text](img/readme/rebaseconflict7.png)
+
+De nuevo más información, y ya empieza a parecerse al proceso de resolución de conflictos del merge. Tenemos que resolver manualmente, marcarlos como resueltos añadiendo al stage y haciendo commit.
+
+También podemos saltarnos ese commit o cancelar todo el rebase. Continuemos. En VS Code, tenemos ya esta vista ya familiar:
+
+![Alt text](img/readme/rebaseconflict8.png)
+
+Aquí hay algo interesante. Recordemos que estamos en `feature/font-changes`, queriendo incorporar `feature/add-text`. ¿Y tenemos los cambios hechos en el commit de f`eature/font-changes` como *Incoming*? En realidad tiene sentido, recordemos que rebase lo que hace es posicionar **nuestra** rama al final de otra. De modo que aceptamos en este caso los cambios entrantes.
+
+Añadimos el cambio al stage y hacemos commit:
+
+![Alt text](img/readme/rebaseconflict9.png)
+
+Por último, tal y como se nos dijo, ejecutamos `git rebase --continue`:
+
+![Alt text](img/readme/rebaseconflict10.png)
+
+Por fin tenemos el conflicto resuelto. El árbol queda así:
+
+![Alt text](img/readme/rebaseconflict11.png)
+
+> **Note**  
+> Vemos que rebase genera árboles más limpios, pero tratar con los conflictos es mucho más difícil que con merge.
 
 ### Peligro
-
+Siguiendo con las mismas ramas, esta vez vamos a provocar algo bastante peor que un conflicto.
 
 ### Merge después de rebase
 Analicemos este caso:
