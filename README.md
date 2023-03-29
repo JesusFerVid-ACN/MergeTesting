@@ -1,5 +1,5 @@
 # Pruebas de fusión entre ramas
-En este reposiorio, simulamos la creación de un sitio web entre dos usuarios, los cuales no están muy sincronizados a la hora de trabajar y puede que haya *conflictos* a la hora de combinar (*merge*) los cambios de cada uno de ellos. 
+En este reposiorio, simulamos la creación de un sitio web entre varios usuarios, los cuales no están muy sincronizados a la hora de trabajar y puede que haya *conflictos* a la hora de combinar los cambios de cada uno de ellos. 
 
 
 ## Merge
@@ -9,7 +9,7 @@ Creamos unos cuantos commits en la rama de desarrollo y por fin terminamos nuest
 
 ![Commits 1](img/readme/tree1.png)
 
-Sin complicarnos, hacemos un *merge* normal y corriente. Nos vamos a la rama destino y fusionamos los cambios de la rama origen.
+Sin complicarnos, hacemos un `merge` normal y corriente. Nos vamos a la rama destino y fusionamos los cambios de la rama origen.
 
 ```bash
 git switch main
@@ -45,7 +45,7 @@ No hay problema. Los cambios se aplican en la rama destino. Ahora incluyamos los
 
 ![Merge conflict](img/readme/mergeconflict.png)
 
-Tenemos un ***conflicto***. Además, git nos chiva que es el el fichero `css/styles.css`, vamos a ver lo que pasa en VS Code en ese fichero:
+Tenemos un ***conflicto***. Además, git nos chiva que es en el fichero `css/styles.css`, vamos a ese fichero en VS Code:
 
 ![VS Code conflict](img/readme/vscodeconflict.png)
 
@@ -57,9 +57,9 @@ Tras aceptar el cambio correcto, vamos a hacer un `git status`:
 
 ![Git status on conflict](img/readme/gitstatusconflict.png)
 
-Nos dice que tenemos *unmerged paths*, es decir, que estamos en medio de un *merge* no finalizado. Nos da varias opciones, o bien abortar la fusión con `git merge --abort` o bien resolver los conflictos haciendo un commit. 
+Nos dice que tenemos *unmerged paths*, es decir, que estamos en medio de un `merge` no finalizado. Nos da varias opciones, o bien abortar la fusión con `git merge --abort` o bien resolver los conflictos haciendo un commit. 
 
-Si miramos más abajo, vemos que en index.html no hay conflictos, está marcado como listo para añadirse al commit, pues las modificaciones en ese archivo no sobreescriben nada en esta rama. Pero css/styles.css sigue marcado como modificado en ambos lados. Como ya lo tenemos resuelto, lo añadimos al stage para marcarlo como tal. De modo que lo que falta por hacer para resolver es:
+Si miramos más abajo, vemos que en `index.html` no hay conflictos, está marcado como listo para añadirse al commit, pues las modificaciones en ese archivo no sobreescriben nada en esta rama. Pero `css/styles.css` sigue marcado como modificado en ambos lados. Como ya lo tenemos resuelto, lo añadimos al stage para marcarlo como tal. De modo que lo que falta por hacer para resolver es:
 
 ```bash
 git add css/styles.css
@@ -71,12 +71,12 @@ Y el historial muestra las ramas correctamente fusionadas:
 ![Conflict solved](img/readme/conflictsolved.png)
 
 ## Rebase
-El cambio de base o *rebase* es otra técnica de incorporación de cambios entre ramas, además del merge.
+El cambio de base o `rebase` es otra técnica de incorporación de cambios entre ramas, además del `merge`.
 
-Rebase hace algo opuesto a merge, pero que acaba obteniendo el mismo resultado. En lugar de traer todos los commits de una rama para sí misma, lo que hace es que posiciona todos los commits de la rama actual al final de la rama especificada. 
+`Rebase` hace algo opuesto a `merge`, pero que acaba obteniendo el mismo resultado. En lugar de traer todos los commits de una rama para sí misma, lo que hace es que posiciona todos los commits de la rama actual al final de la rama especificada. 
 
 ### Cuando aplicar un rebase
-Hemos creado la rama `feature/awesome-things`  a partir de la rama `develop`, en la cual vamos a trabajar, incorporando una serie de características increíbles. Aquí podemos verlas:
+A partir de la rama `develop`, hemos creado la rama `feature/awesome-things` , en la cual vamos a trabajar, incorporando una serie de características increíbles. Aquí podemos verlas:
 
 ![Rebase 1](img/readme/rebase1.png)
 
@@ -84,10 +84,10 @@ En `feature/awesome-things`, hemos aumentado el tamaño del título, y en `devel
 
 En este caso, nuestra rama sólo está perdiendo los cambios de un solo commit en `develop`. Sin embargo, si estamos mucho tiempo desarrollando en una rama, en un repositorio en el que colaboran muchos usuarios, es altamente probable que estemos perdiendo muchos cambios, lo cual aumenta la probabilidad de conflictos de fusión, y errores al ejecutar, si algún módulo ha tenido cambios drásticos en su interfaz y/o funcionamiento.
 
-**Conclusión**: se recomienda que nuestras ramas vayan actualizandose con su rama "padre" de vez en cuando. Ahí entra el rebase.
+**Conclusión**: se recomienda que nuestras ramas vayan actualizandose con su rama "padre" de vez en cuando. Ahí entra el `rebase`.
 
 ### Como aplicar un rebase
-El rebase se aplica exactamente igual que el merge. Debemos situarnos en la rama destino, es decir, en la que queremos incorporar los cambios. Después, hacemos el rebase, así:
+El `rebase` se aplica exactamente igual que el `merge`. Debemos situarnos en la rama destino, es decir, en la que queremos incorporar los cambios. Después, hacemos el `rebase`, así:
 
 ```bash
 git switch feature/awesome-things
@@ -107,8 +107,8 @@ Desde fuera, parece como si todos los commits de `feature/awesome-things` se hub
 Internamente, lo que se ha hecho es **eliminar** todos esos commits y crear otros con las mismas modificaciones, pero partiendo (poniendo su ***base***) desde el final de la rama que queríamos incorporar (la rama origen).
 
 > **Warning**  
-> El rebase altera el historial, es decir, elimina commits y genera otros nuevos, con distinto código *hash*. Este tipo de técnicas no son recomendadas si hablamos de commits a los cuales otros usuarios tienen acceso.
-> Si un usuario quisiera acceder a uno de esos commits, o generase una rama partiendo de ellos, podría haber problemas si el rebase los elimina.
+> El `rebase` altera el historial, es decir, elimina commits y genera otros nuevos, con distinto código *hash*. Este tipo de técnicas no son recomendadas si hablamos de commits a los cuales otros usuarios tienen acceso.
+> Si un usuario quisiera acceder a uno de esos commits, podría haber problemas si el `rebase` los elimina.
 
 ### Conflictos 
 Puesto que estamos igualmente integrando cambios de una rama en otra, puede haber conflictos en el proceso. Vamos a hacer algo así.
@@ -133,17 +133,19 @@ En `feature/font-changes`, el usuario quiere volver a incorporar los cambios de 
 
 ![Rebase conflict](img/readme/rebaseconflict5.png)
 
-Esto es lo que obtenemos al tratar de hacer rebase. No es muy explicativo. Veamos qué muestra `git status`:
+Esto es lo que obtenemos al tratar de hacer `rebase`. No es muy explicativo. Veamos qué muestra `git status`:
 
 ![Rebase conflict](img/readme/rebaseconflict6.png)
 
-Esto ya nos aclara un poco, nos da varias opciones. Vamos a optar por continuar el rebase con `git rebase --continue`.
+Esto ya nos aclara un poco, nos da varias opciones. Vamos a optar por continuar el `rebase` con `git rebase --continue`.
 
 ![Rebase conflict](img/readme/rebaseconflict7.png)
 
-De nuevo más información, y ya empieza a parecerse al proceso de resolución de conflictos del merge. Tenemos que resolver manualmente, marcarlos como resueltos añadiendo al stage y haciendo commit.
+De nuevo más información, y ya empieza a parecerse al proceso de resolución de conflictos del `merge`. Tenemos que resolver manualmente, marcarlos como resueltos añadiendo al stage, haciendo commit y ejecutando `git rebase --continue`.
 
-También podemos saltarnos ese commit o cancelar todo el rebase. Continuemos. En VS Code, tenemos ya esta vista ya familiar:
+También podemos saltarnos ese commit o cancelar todo el `rebase`.
+
+Continuemos. En VS Code, tenemos esta vista ya familiar:
 
 ![Rebase conflict](img/readme/rebaseconflict8.png)
 
@@ -165,7 +167,7 @@ Por fin tenemos el conflicto resuelto. El árbol queda así:
 > Vemos que `rebase` genera árboles más limpios, pero tratar con los conflictos es mucho más difícil que con `merge`. Y no olvidemos el problema de la eliminación de commits. Nunca se avisa demasiadas veces.
 
 ### Rebase y push
-Rebase altera el historial, con lo cual no es muy amigo de push. Vamos a ver un ejemplo:
+`Rebase` altera el historial, con lo cual no es muy amigo de `push`. Vamos a ver un ejemplo:
 
 Hemos creado una nueva rama, `feature/useful`, que contiene funcionalidades útiles para más de un usuario. 
 
@@ -179,7 +181,7 @@ Mientras tanto, la rama `develop` sigue incluyendo commits.
 
 ![Rebase and Push](img/readme/strange3.png)
 
-De hecho, a `feature/useful` le vendría bien incluir dichas funcionalidades. Así que se hace un rebase.
+De hecho, a `feature/useful` le vendría bien incluir dichas funcionalidades. Así que se hace un `rebase`.
 
 ![Rebase and Push](img/readme/strange4.png)
 
@@ -191,13 +193,13 @@ Ahora `feature/useful` está a continuación de `develop` y... ¿existe el mismo
 
 Pues que el commit que vemos abajo es el que está en la rama remota, que no se ha borrado.
 
-En fin, vamos a hacer push de la rama, que tenemos nuevos cambios.
+En fin, vamos a hacer `push` de la rama, que tenemos nuevos cambios.
 
 ![Rebase and Push](img/readme/strange6.png)
 
-El push ha sido rechazado... porque mi rama está ¿detrás? de su contraparte remota. Recordemos que antes hicimos rebase de esta rama con `develop`. Hemos cambiado el historial, y eliminado commits... de una rama que estaba **online**. Por eso git está tan confundido.
+El `push` ha sido rechazado... porque mi rama está *¿detrás?* de su contraparte remota. Recordemos que antes hicimos rebase de esta rama con `develop`. Hemos cambiado el historial, y eliminado commits... de una rama que estaba **online**. Por eso git está tan confundido.
 
-Nos pide algo inpensable: que hagamos `pull` de los cambios sin incorporar, ya que estamos "detrás". Por extraño que parezca, lo hacemos, antes de subir nuestros cambios. Es decir:
+Nos pide algo inpensable: que hagamos `pull` de los cambios sin incorporar, ya que estamos *"detrás"*. Por extraño que parezca, lo hacemos, antes de subir nuestros cambios. Es decir:
 
 ```bash
 git pull
@@ -211,7 +213,7 @@ Después de eso, este es el árbol:
 Esto es un ejemplo de un **mal** uso de `rebase`. Queríamos un historial claro, limpio y sin ramificaciones. Hemos terminado con un historial ramificado, poco entendible, con un commit duplicado, y habiendo tenido que hacer un `pull` (lo cual incluye un `merge`) que no aporta nada, para luego por fin poder hacer un `push`, que era lo único que queríamos, subir nuestros cambios.
 
 > **Note**  
-> Hay que tener muy claro que sabemos lo que hacemos al usar herramientas tan poderosas como rebase. Si no lo tenemos claro, podemos conseguir todo lo contrario a lo que pretendemos.
+> Hay que tener muy claro que sabemos lo que hacemos al usar herramientas tan poderosas como `rebase`. Si no lo tenemos claro, podemos conseguir todo lo contrario a lo que pretendemos.
 
 ### Merge después de rebase
 Después de ver los problemas y peligros de `rebase`, veamos un caso de muy buen uso del mismo. Combinando adecuadamente con `merge`.
@@ -275,7 +277,7 @@ Y ahora la rama `feature/useful`, que recordemos que también la queremos en el 
 
 Con un `git push`, podemos entrar en el mismo terreno fangoso que hemos visto anteriormente, ya que esta rama ha hecho algún que otro `rebase`. Existe una forma de arreglar eso.
 
-Si pasamos `--force` a `git push`, estamos aplicando fuerza bruta y nuestros cambios sobreescribirán los que hay online, pudiendo destruir trabajo de otros colaboradores. Pero `--force-with-lease` no nos dejará seguir adelante si ese es el caso, pero tampoco abortará si detecta un historial extraño. Digamos que prepara a `push` para que entienda los cambios hechos por `rebase`.
+Si pasamos `--force` a `git push`, estamos aplicando fuerza bruta y nuestros cambios sobreescribirán los que hay online, pudiendo destruir trabajo de otros colaboradores. Pero `--force-with-lease` no nos dejará seguir adelante si ese es el caso, al mismo tiempo que tampoco abortará si detecta un historial extraño. Digamos que prepara a `push` para que entienda los cambios hechos por `rebase`.
 
 De modo que, situados en `feature/useful`, hacemos:
 
@@ -290,7 +292,7 @@ Y después de eso, este es el árbol:
 Las ramas han sido subidas, no hemos tenido quebraderos de cabeza, y el historial está limpio y claro.
 
 ## Stash
-Para explicar lo que es el stash, maginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluídos en una release, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
+Para explicar lo que es el stash, imaginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluídos en una *release*, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
 
 Pasado un tiempo, nos llaman diciendo que tenemos que modificar nuestro anterior trabajo, y nosotros estamos con una característica a medio desarrollar. No queremos perder el trabajo que tenemos ahora mismo por volver a la rama en la que desarrollabamos antes.
 
@@ -302,26 +304,26 @@ Just to save my WIP
 This is some unfinished feature, this commit only serves as a checkpoint so I don't lose my work before switching branches.
 ```
 
-Por ello existe el stash. Un espacio aparte en el que guardar cambios destinados a ser recuperados más tarde. En lugar de ensuciar el historial con un commit que no aporta nada, ponemos los cambios en un limbo, dejando limpio el *working tree*, y recuperamos dichos cambios más tarde.
+Por ello existe el ***stash***. Un espacio aparte en el que guardar cambios destinados a ser recuperados más tarde. En lugar de ensuciar el historial con un commit que no aporta nada, ponemos los cambios en un limbo, dejando limpio el *working tree*, y recuperamos dichos cambios más tarde.
 
 ### Guardar y recuperar cambios
 Para guardar los cambios, simplemente usamos el comando `git stash`. 
 
 Para recuperar los cambios, tenemos dos métodos: *pop* y *apply*. 
-1. ***Pop***. Recupera los cambios almacenados en el stash y los borra del mismo.
-2. ***Apply***. Recupera los cambios del stash sin borrarlos.
+1. ***Pop***. Recupera los cambios almacenados en el *stash* y los borra del mismo.
+2. ***Apply***. Recupera los cambios del *stash* sin borrarlos.
 
-Ambos comandos actuarán sobre los últimos cambios almacenados (*LIFO*), porque sí, se puede tener más de un stash, pero no entraremos ahí de momento.
+Ambos comandos actuarán sobre los últimos cambios almacenados (*LIFO*), porque sí, se puede tener más de un *stash*, pero no entraremos ahí de momento.
 
 ### No todo se guarda
 El comando `git stash` **no** guardará cambios que no estén en el *stage* (*unstaged*) ni ficheros ignorados. Hay varias formas de solucionar esto.
 
-1. Añadir los ficheros manualmente y hacer un stash como ya sabemos.
+1. Añadir los ficheros manualmente y hacer un `stash` como ya sabemos.
    ```bash
    git add .
    git stash
    ```
-2. Usar el flag `-u` o `--include-untracked` para guardar también los cambios que no están en el stage. Con esto seguimos dejando fuera los ficheros ignorados.
+2. Usar el flag `-u` o `--include-untracked` para guardar también los cambios que no están en el *stage*. Con esto seguimos dejando fuera los ficheros ignorados.
    ```bash
    git stash -u
    ```
