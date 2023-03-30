@@ -1,5 +1,5 @@
 # Pruebas de fusión entre ramas
-En este reposiorio, simulamos la creación de un sitio web entre varios usuarios, los cuales no están muy sincronizados a la hora de trabajar y puede que haya *conflictos* a la hora de combinar los cambios de cada uno de ellos. 
+En este repositorio, simulamos la creación de un sitio web entre varios usuarios, los cuales no están muy sincronizados a la hora de trabajar y puede que haya *conflictos* a la hora de combinar los cambios de cada uno de ellos. 
 
 
 ## Merge
@@ -49,7 +49,7 @@ Tenemos un ***conflicto***. Además, git nos chiva que es en el fichero `css/sty
 
 ![VS Code conflict](img/readme/vscodeconflict.png)
 
-Nos dice que en esa línea, vienen cambios diferentes en ambos lados. Ahora mismo, tiene el valor superior, en verde, pero en la rama entrante, se ha modificado la misma línea con un valor distinto. Debemos elegir si aceptamos el actual, el entrante, ambos o algo diferente.
+Nos dice que, en esa línea, vienen cambios diferentes en ambos lados. Ahora mismo, tiene el valor superior, en verde, pero en la rama entrante, se ha modificado la misma línea con un valor distinto. Debemos elegir si aceptamos el actual, el entrante, ambos o algo diferente.
 
 En nuestro caso, nos quedamos con el cambio que ya tenemos, ya que es el que corresponde a la rama donde estábamos editando los estilos. El usuario trabajando en `feature/welcome` se ha excedido de sus límites y ha modificado un fragmento de código que no le correspondía.
 
@@ -59,7 +59,7 @@ Tras aceptar el cambio correcto, vamos a hacer un `git status`:
 
 Nos dice que tenemos *unmerged paths*, es decir, que estamos en medio de un `merge` no finalizado. Nos da varias opciones, o bien abortar la fusión con `git merge --abort` o bien resolver los conflictos haciendo un commit. 
 
-Si miramos más abajo, vemos que en `index.html` no hay conflictos, está marcado como listo para añadirse al commit, pues las modificaciones en ese archivo no sobreescriben nada en esta rama. Pero `css/styles.css` sigue marcado como modificado en ambos lados. Como ya lo tenemos resuelto, lo añadimos al stage para marcarlo como tal. De modo que lo que falta por hacer para resolver es:
+Si miramos más abajo, vemos que en `index.html` no hay conflictos, está marcado como listo para añadirse al commit, pues las modificaciones en ese archivo no sobrescriben nada en esta rama. Pero `css/styles.css` sigue marcado como modificado en ambos lados. Como ya lo tenemos resuelto, lo añadimos al stage para marcarlo como tal. De modo que lo que falta por hacer para resolver es:
 
 ```bash
 git add css/styles.css
@@ -84,7 +84,7 @@ En `feature/awesome-things`, hemos aumentado el tamaño del título, y en `devel
 
 En este caso, nuestra rama sólo está perdiendo los cambios de un solo commit en `develop`. Sin embargo, si estamos mucho tiempo desarrollando en una rama, en un repositorio en el que colaboran muchos usuarios, es altamente probable que estemos perdiendo muchos cambios, lo cual aumenta la probabilidad de conflictos de fusión, y errores al ejecutar, si algún módulo ha tenido cambios drásticos en su interfaz y/o funcionamiento.
 
-**Conclusión**: se recomienda que nuestras ramas vayan actualizandose con su rama "padre" de vez en cuando. Ahí entra el `rebase`.
+**Conclusión**: se recomienda que nuestras ramas vayan actualizándose con su rama "padre" de vez en cuando. Ahí entra el `rebase`.
 
 ### Como aplicar un rebase
 El `rebase` se aplica exactamente igual que el `merge`. Debemos situarnos en la rama destino, es decir, en la que queremos incorporar los cambios. Después, hacemos el `rebase`, así:
@@ -149,7 +149,7 @@ Continuemos. En VS Code, tenemos esta vista ya familiar:
 
 ![Rebase conflict](img/readme/rebaseconflict8.png)
 
-Aquí hay algo interesante. Recordemos que estamos en `feature/font-changes`, queriendo incorporar `feature/add-text`. ¿Y tenemos los cambios hechos en el commit de `feature/font-changes` como *Incoming*? En realidad tiene sentido, recordemos que `rebase` lo que hace es posicionar **nuestra** rama al final de otra. De modo que aceptamos en este caso los cambios entrantes.
+Aquí hay algo interesante. Recordemos que estamos en `feature/font-changes`, queriendo incorporar `feature/add-text`. ¿Y tenemos los cambios hechos en el commit de `feature/font-changes` como *Incoming*? En realidad, tiene sentido, recordemos que `rebase` lo que hace es posicionar **nuestra** rama al final de otra. De modo que aceptamos en este caso los cambios entrantes.
 
 Añadimos el cambio al stage y hacemos commit:
 
@@ -197,7 +197,7 @@ En fin, vamos a hacer `push` de la rama, que tenemos nuevos cambios.
 
 ![Rebase and Push](img/readme/strange6.png)
 
-El `push` ha sido rechazado... porque mi rama está *¿detrás?* de su contraparte remota. Recordemos que antes hicimos rebase de esta rama con `develop`. Hemos cambiado el historial, y eliminado commits... de una rama que estaba **online**. Por eso git está tan confundido.
+El `push` ha sido rechazado... porque mi rama está *¿detrás? * de su contraparte remota. Recordemos que antes hicimos rebase de esta rama con `develop`. Hemos cambiado el historial, y eliminado commits... de una rama que estaba **online**. Por eso git está tan confundido.
 
 Nos pide algo inpensable: que hagamos `pull` de los cambios sin incorporar, ya que estamos *"detrás"*. Por extraño que parezca, lo hacemos, antes de subir nuestros cambios. Es decir:
 
@@ -260,7 +260,7 @@ Precioso. Los cambios han sido incorporados a `develop`. El historial de `develo
 
 Esto ha sido posible porque gracias a un **buen** uso de `rebase`, las ramas han avanzado de manera sincronizada, sin llegar a diferir demasiado.
 
-### Subamoslo
+### Subámoslo
 Ahora casi da miedo fastidiarla al hacer `push`, con tanto `rebase` y `merge` involucrado.
 
 Infundado. Para empezar, en `develop` no hay problema:
@@ -277,7 +277,7 @@ Y ahora la rama `feature/useful`, que recordemos que también la queremos en el 
 
 Con un `git push`, podemos entrar en el mismo terreno fangoso que hemos visto anteriormente, ya que esta rama ha hecho algún que otro `rebase`. Existe una forma de arreglar eso.
 
-Si pasamos `--force` a `git push`, estamos aplicando fuerza bruta y nuestros cambios sobreescribirán los que hay online, pudiendo destruir trabajo de otros colaboradores. Pero `--force-with-lease` no nos dejará seguir adelante si ese es el caso, al mismo tiempo que tampoco abortará si detecta un historial extraño. Digamos que prepara a `push` para que entienda los cambios hechos por `rebase`.
+Si pasamos `--force` a `git push`, estamos aplicando fuerza bruta y nuestros cambios sobrescribirán los que hay online, pudiendo destruir trabajo de otros colaboradores. Pero `--force-with-lease` no nos dejará seguir adelante si ese es el caso, al mismo tiempo que tampoco abortará si detecta un historial extraño. Digamos que prepara a `push` para que entienda los cambios hechos por `rebase`.
 
 De modo que, situados en `feature/useful`, hacemos:
 
@@ -372,7 +372,7 @@ Comprobemos el árbol:
 Tenemos los cambios que fueron aprobados en la rama `develop`.
 
 ## Stash
-Para explicar lo que es el stash, imaginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluídos en una *release*, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
+Para explicar lo que es el stash, imaginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluidos en una *release*, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
 
 Pasado un tiempo, nos llaman diciendo que tenemos que modificar nuestro anterior trabajo, y nosotros estamos con una característica a medio desarrollar. No queremos perder el trabajo que tenemos ahora mismo por volver a la rama en la que desarrollábamos antes.
 
@@ -381,7 +381,7 @@ Una solución puede ser un commit. Guardamos nuestros cambios y nos libramos. Pe
 ```
 Just to save my WIP
 
-This is some unfinished feature, this commit only serves as a checkpoint so I don't lose my work before switching branches.
+This is an unfinished feature, this commit only serves as a checkpoint so I don't lose my work before switching branches.
 ```
 
 Por ello existe el ***stash***. Un espacio aparte en el que guardar cambios destinados a ser recuperados más tarde. En lugar de ensuciar el historial con un commit que no aporta nada, ponemos los cambios en un limbo, dejando limpio el *working tree*, y recuperamos dichos cambios más tarde.
