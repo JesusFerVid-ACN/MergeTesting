@@ -310,7 +310,7 @@ Por ello existe el ***stash***. Un espacio aparte en el que guardar cambios dest
 Para guardar los cambios, simplemente usamos el comando `git stash`. 
 
 Para recuperar los cambios, tenemos dos métodos: *pop* y *apply*. 
-1. ***Pop***. Recupera los cambios almacenados en el *stash* y los borra de este.
+1. ***Pop***. Recupera los cambios almacenados en el *stash* y los borra del mismo.
 2. ***Apply***. Recupera los cambios del *stash* sin borrarlos.
 
 Ambos comandos actuarán sobre los últimos cambios almacenados (*LIFO*), porque sí, se puede tener más de un *stash*, pero no entraremos ahí de momento.
