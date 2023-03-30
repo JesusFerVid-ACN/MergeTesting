@@ -1,13 +1,65 @@
+* {
+	box-sizing: border-box;
+	margin: 0px;
+	padding: 0px;
+}
+
 body {
 	font-family: Arial, Helvetica, sans-serif;
+	min-height: 100dvh;
+	display: grid;
+	grid-template-rows: 6em auto 3em;
+	background-color: #ECEFF1;
 }
 
 h1 {
 	color: #9146FF;
 	font-size: 3em;
-	cursor: pointer;
 }
+
+	#title {
+		cursor: pointer
+	}
 
 .blue {
 	color: #0CB7F6;
+}
+
+header, main, footer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+header {
+	background-color: #FFF;
+	text-align: center;
+}
+
+main {
+	margin: 0 auto ;
+	width: 80%;
+}
+
+	.card {
+		border-radius: 20px;
+		padding: 20px;
+		background-color: #FAFAFA;
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	}
+
+		.card h2 {
+			margin-bottom: 20px;
+			border-bottom: 1px solid #AAAAAA;
+			padding-bottom: 6px;
+		}
+		
+		.card p {
+			margin-bottom: 10px;
+		}
+
+footer {
+	background-color: #000;
+	color: #FFF;
+	text-align: center;
 }

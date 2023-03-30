@@ -102,7 +102,7 @@ Veamos como ha quedado ahora el historial:
 
 Vemos varias cosas. Lo primero, el historial ahora es lineal, no hay "ramificaciones". Y el commit con el cambio de tamaño está *después* que el de cambio de título.
 
-Desde fuera, parece como si todos los commits de `feature/awesome-things` se hubiesen movido para colocarse delante del úlimo commit de `develop`. Sin embargo, los commits no pueden "moverse", y una pista la tenemos en el hecho de que el commit `Bigger title` ahora tiene un identificador (un *hash*) distinto. Eso se debe a que **NO** es el mismo commit.
+Desde fuera, parece como si todos los commits de `feature/awesome-things` se hubiesen movido para colocarse delante del último commit de `develop`. Sin embargo, los commits no pueden "moverse", y una pista la tenemos en el hecho de que el commit `Bigger title` ahora tiene un identificador (un *hash*) distinto. Eso se debe a que **NO** es el mismo commit.
 
 Internamente, lo que se ha hecho es **eliminar** todos esos commits y crear otros con las mismas modificaciones, pero partiendo (poniendo su ***base***) desde el final de la rama que queríamos incorporar (la rama origen).
 
@@ -291,10 +291,90 @@ Y después de eso, este es el árbol:
 
 Las ramas han sido subidas, no hemos tenido quebraderos de cabeza, y el historial está limpio y claro.
 
+## Pull requests
+Una ***pull request*** (o ***merge request***) permite que los usuarios soliciten aprobación de sus commits antes de ser incorporados a la rama base.
+
+> **Note**  
+> Podemos crear y controlar pull requests desde varias herramientas, como GitHub CLI, GitHub Mobile... Nosotros hemos elegido la versión web por su facilidad, y porque es la que siempre tendrá disponible todo el mundo.
+
+Hemos creado la rama `feature/request` que incluye cambios en la estructura y apariencia de la página. 
+
+![Pull Request](img/readme/pr1.png)
+
+Queremos solicitar que dichos cambios sean aprovados. Lo primero que necesitamos es subir la rama al remoto.
+
+```bash
+git push -u origin feature/request
+```
+> **Note**  
+> El parámetro `-u`, o bien `--set-upstream` se usa la primera vez que tenemos que subir una rama a un repositorio, para indicarle el remoto y la rama remota a la que vincularlo.  
+> Podemos usar el comando `git config push.autoSetupRemote true` para que git haga esto mismo por nosotros. Si además pasamos `--global` al comando, se aplicará en todos los repositorios que creemos.
+
+![Pull Request](img/readme/pr2.png)
+
+Con la rama subida, nos vamos a la página del repositorio en GitHub a iniciar la pull request. Vemos que tenemos un mensaje en amarillo que nos indica que nuestra rama ha tenido cambios recientes.
+
+![Pull Request](img/readme/pr3.png)
+
+Hacemos click en ***Compare & pull request***. Nos llevará a una página donde podremos crear nuestra pull request.
+
+![Pull Request](img/readme/pr4.png)
+
+Nos pide dos ramas:
+- **Base**: La rama a la cual queremos solicitar que se incorporen nuestros cambios. Por defecto, se selecciona la rama marcada como `default`, en este caso `main`. Pero nosotros queremos incorporar a `develop`.
+- **Compare**: Rama que contiene los cambios a incorporar. En nuestro caso, `feature/request`.
+
+Una vez elegidas, incluímos un título y descripción:
+
+![Pull Request](img/readme/pr5.png)
+
+En el botón verde, podemos elegir mediante el desplegable si queremos crear una pull request o guardar lo que hemos escrito como borrador. Nosotros estamos listos para crearla.
+
+![Pull Request](img/readme/pr6.png)
+
+Una vez creada, se nos dirigirá a la [página de pull requests del repositorio](https://github.com/JesusFerVid-ACN/MergeTesting/pulls), donde veremos un resumen de lo que acabamos de crear. 
+
+Veremos que arriba del todo, aparecerá como estado **Open**. Casi al final, veremos esta sección:
+
+![Pull Request](img/readme/pr7.png)
+
+Aquí podemos realizar diferentes acciones, como requerir la aprobación de ciertos usuarios. Además, se nos muestra que la rama no tiene conflictos con la rama base. Lo cual quiere decir que podemos fusionarlas.
+
+El botón ***Merge pull request*** nos permite aceptar e incorporar los cambios a la rama destino. Tiene varias opciones para ello:
+
+![Pull Request](img/readme/pr8.png)
+
+Cada equipo tiene sus preferencias. En nuestro caso, vamos con un *merge commit* normal y corriente. Elegimos la opción y pulsamos el gran botón verde.
+
+También podemos añadir algún comentario extra a la pull request, o bien optar por cerrarla sin incluir los cambios.
+
+![Pull Request](img/readme/pr9.png)
+
+> **Note**
+> Normalmente, son otros usuarios los encargados de aprobar o rechazar los cambios, pero en este caso, somos el único usuario en el repositorio.
+
+En caso de aceptar, una vez que hacemos click en  ***Merge pull request***, se nos pedirá un título y una descripción para un commit. Introducimos los datos y hacemos click en ***Confirm merge***.
+
+![Pull Request](img/readme/pr10.png)
+
+La pull request pasará a estado **Merged** y será cerrada.
+
+![Pull Request](img/readme/pr11.png)
+
+GitHub nos ha creado el commit con la fusión, así que de vuelta en nuestro repositorio local, en la rama `develop`, hacemos un `git pull`.
+
+![Pull Request](img/readme/pr12.png)
+
+Comprobemos el árbol:
+
+![Pull Request](img/readme/pr13.png)
+
+Tenemos los cambios que fueron aprobados en la rama `develop`.
+
 ## Stash
 Para explicar lo que es el stash, imaginemos que tenemos unos cambios que enviamos a ser evaluados antes de ser incluídos en una *release*, pero mientras tanto seguimos desarrollando nuevas funcionalidades.
 
-Pasado un tiempo, nos llaman diciendo que tenemos que modificar nuestro anterior trabajo, y nosotros estamos con una característica a medio desarrollar. No queremos perder el trabajo que tenemos ahora mismo por volver a la rama en la que desarrollabamos antes.
+Pasado un tiempo, nos llaman diciendo que tenemos que modificar nuestro anterior trabajo, y nosotros estamos con una característica a medio desarrollar. No queremos perder el trabajo que tenemos ahora mismo por volver a la rama en la que desarrollábamos antes.
 
 Una solución puede ser un commit. Guardamos nuestros cambios y nos libramos. Pero realmente ¿tiene sentido añadir un commit de algo hecho a medias? Y ¿qué pondríamos en el commit? No es muy agradable ver un mensaje de commit así:
 
